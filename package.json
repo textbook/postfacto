@@ -1,11 +1,16 @@
 {
   "name": "postfacto",
   "description": "Deployment package for Postfacto on Heroku",
-  "cacheDirectories": ["web/node_modules"],
+  "cacheDirectories": [
+    "web/node_modules"
+  ],
   "scripts": {
+    "copy-assets": "cp -r ./web/build/. ./api/public",
+    "rearrange-repo": "cp -r ./api/. .",
+    "postrearrange-repo": "rm -rf ./api ./e2e ./mock-google-server ./web",
     "install": "cd ./web && npm install",
     "build": "cd ./web && npm run build",
-    "postbuild": "cp -r ./web/build/. ./api/public"
+    "postbuild": "npm run copy-assets && npm run rearrange-repo"
   },
   "engines": {
     "node": "12.6.0",

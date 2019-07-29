@@ -1,4 +1,7 @@
 # Postfacto
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/textbook/postfacto/tree/feat-combine-artifacts)
+
 [![Build Status](https://travis-ci.org/pivotal/postfacto.svg?branch=master)](https://travis-ci.org/pivotal/postfacto)
 
 Postfacto is a **free**, **open-source** and **self-hosted** **retro tool** aimed at helping **remote teams**.

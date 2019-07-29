@@ -6,13 +6,39 @@
     "SECRET_KEY_BASE": {
       "description": "Secret key base for Rails app",
       "generator": "secret"
+    },
+    "WEBSOCKET_PORT": {
+      "description": "The port for websocket connections",
+      "value": "4443"
     }
   },
   "buildpacks": [
-    { "url": "heroku/nodejs" },
-    { "url": "heroku/ruby" }
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git#v158"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-ruby.git#v200"
+    }
   ],
-  "keywords": ["retro", "ruby", "rails", "javascript", "react"],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev"
+    },
+    {
+      "plan": "heroku-redis:hobby-dev"
+    }
+  ],
+  "keywords": [
+    "retro",
+    "ruby",
+    "rails",
+    "javascript",
+    "react"
+  ],
+  "scripts": {
+    "postdeploy": "ADMIN_EMAIL=email@example.com ADMIN_PASSWORD=password bundle exec rake db:migrate admin:create_user"
+  },
+  "logo": "https://raw.githubusercontent.com/textbook/postfacto/feat-combine-artifacts/media/postfactobot.png",
   "success_url": "/admin",
   "stack": "heroku-18"
 }
