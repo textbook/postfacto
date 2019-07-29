@@ -1,0 +1,14 @@
+{
+  "name": "postfacto",
+  "description": "Deployment package for Postfacto on Heroku",
+  "cacheDirectories": ["web/node_modules"],
+  "scripts": {
+    "install": "cd ./web && npm install",
+    "build": "cd ./web && npm run build",
+    "postbuild": "cp -r ./web/build/. ./api/public"
+  },
+  "engines": {
+    "node": "12.6.0",
+    "npm": "6.9.0"
+  }
+}
