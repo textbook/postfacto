@@ -10,6 +10,12 @@
     "WEBSOCKET_PORT": {
       "description": "The port for websocket connections",
       "value": "4443"
+    },
+    "ADMIN_EMAIL": {
+      "description": "Email address for the administrator"
+    },
+    "ADMIN_PASSWORD": {
+      "description": "Password for the administrator"
     }
   },
   "buildpacks": [
@@ -36,7 +42,7 @@
     "react"
   ],
   "scripts": {
-    "postdeploy": "ADMIN_EMAIL=email@example.com ADMIN_PASSWORD=password bundle exec rake db:migrate admin:create_user"
+    "postdeploy": "bundle exec rake db:migrate admin:create_user"
   },
   "logo": "https://raw.githubusercontent.com/textbook/postfacto/feat-combine-artifacts/media/postfactobot.png",
   "success_url": "/admin",
