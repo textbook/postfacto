@@ -1,3 +1,7 @@
 build:
   docker:
     web: Dockerfile
+release:
+  image: web
+  command:
+    - create-admin-user.sh $ADMIN_EMAIL $ADMIN_PASSWORD
