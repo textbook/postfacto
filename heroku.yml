@@ -1,7 +1,8 @@
 build:
   docker:
     web: Dockerfile
+    worker: Dockerfile-worker
 release:
-  image: web
+  image: worker
   command:
-    - create-admin-user.sh $ADMIN_EMAIL $ADMIN_PASSWORD
+    - ./create-admin-user.sh $ADMIN_EMAIL $ADMIN_PASSWORD

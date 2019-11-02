@@ -36,4 +36,4 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-ADMIN_EMAIL=$1 ADMIN_PASSWORD=$2 rake admin:create_user
+ADMIN_EMAIL=$1 ADMIN_PASSWORD=$2 bundle exec rake admin:create_user
