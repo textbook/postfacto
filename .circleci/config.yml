@@ -81,7 +81,7 @@ jobs:
           working_directory: web
       - run:
           name: Test
-          command: npm run test
+          command: npm run test -- --maxWorkers 1
           working_directory: web
   ruby-test:
     <<: *postfacto
