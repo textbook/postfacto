@@ -1,0 +1,120 @@
+version: 2
+
+ruby_cache: &ruby_cache
+  keys:
+    - postfacto-ruby-{{ checksum "api/Gemfile.lock" }}-{{ checksum "e2e/Gemfile.lock" }}
+    - postfacto-ruby-{{ checksum "api/Gemfile.lock" }}-
+    - postfacto-ruby-
+
+node_cache: &node_cache
+  keys:
+    - postfacto-node-{{ checksum "web/package-lock.json"}}-{{ checksum "mock-google-server/package-lock.json" }}
+    - postfacto-node-{{ checksum "web/package-lock.json"}}-
+    - postfacto-node-
+
+postfacto: &postfacto
+  docker:
+    - image: postfacto/dev:2.6.3-12.6.0
+
+all_builds: &all_builds
+  filters:
+    tags:
+      only: /v\d+(\.\d+)*/
+
+release_only: &release_only
+  filters:
+    branches:
+      ignore: /.*/
+    tags:
+      only: /v\d+(\.\d+)*/
+
+jobs:
+  node-dependencies:
+    <<: *postfacto
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *node_cache
+      - run:
+          name: Install web
+          command: npm ci
+          working_directory: web
+      - run:
+          name: Install mock Google server
+          command: npm ci
+          working_directory: mock-google-server
+      - save_cache:
+          key: postfacto-node-{{ checksum "web/package-lock.json"}}-{{ checksum "mock-google-server/package-lock.json" }}
+          paths:
+            - ~/.npm
+  ruby-dependencies:
+    <<: *postfacto
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *ruby_cache
+      - run:
+          name: Install API
+          command: bundle install --without production
+          working_directory: api
+      - run:
+          name: Install E2E
+          command: bundle install
+          working_directory: e2e
+      - save_cache:
+          key: postfacto-ruby-{{ checksum "api/Gemfile.lock" }}-{{ checksum "e2e/Gemfile.lock" }}
+          paths:
+            - ~/.bundle
+  node-test:
+    <<: *postfacto
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *node_cache
+      - run:
+          name: Install web
+          command: npm ci
+          working_directory: web
+      - run:
+          name: Lint
+          command: npm run lint
+          working_directory: web
+      - run:
+          name: Test
+          command: npm run test
+          working_directory: web
+  ruby-test:
+    <<: *postfacto
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *ruby_cache
+      - run:
+          name: Install API
+          command: bundle install --without production
+          working_directory: api
+      - run:
+          name: Prepare
+          command: bundle exec rake db:create db:migrate
+          working_directory: api
+      - run:
+          name: Test
+          command: bundle exec rake
+          working_directory: api
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - node-dependencies:
+          <<: *all_builds
+      - ruby-dependencies:
+          <<: *all_builds
+      - node-test:
+          <<: *all_builds
+          requires:
+            - node-dependencies
+      - ruby-test:
+          <<: *all_builds
+          requires:
+            - ruby-dependencies
