@@ -14,7 +14,7 @@ node_cache: &node_cache
 
 postfacto: &postfacto
   docker:
-    - image: postfacto/dev:2.6.3-12.6.0
+    - image: postfacto/dev:2.7.3-14.16.1
 
 all_builds: &all_builds
   filters:
