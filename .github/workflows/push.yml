@@ -113,6 +113,7 @@ jobs:
       run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
     - name: Docker build
       run: |
+        docker pull postfacto/postfacto
         docker build \
           "$GITHUB_WORKSPACE" \
           -f "$GITHUB_WORKSPACE/Dockerfile" \
@@ -202,6 +203,7 @@ jobs:
       run: echo ::set-output name=VERSION::${GITHUB_REF##*/}
     - name: Smoke build
       run: |
+        docker pull postfacto/smoke
         docker build \
           "$GITHUB_WORKSPACE/smoke" \
           -f "$GITHUB_WORKSPACE/docker/smoke/Dockerfile" \
