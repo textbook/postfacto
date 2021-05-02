@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  setup:
+    image: postfacto/postfacto:${TAG}
+    entrypoint: create-admin-user $ADMIN_EMAIL $ADMIN_PASSWORD
+    environment:
+      ADMIN_EMAIL: $ADMIN_EMAIL
+      ADMIN_PASSWORD: $ADMIN_PASSWORD
+      DATABASE_URL: 'postgres://postfacto:secret@postgres:5432/postfacto'
+      SECRET_KEY_BASE: $SECRET_KEY_BASE
+    links:
+    - postfacto
+    - postgres
+
+  test:
+    image: postfacto/smoke:${TAG}
+    environment:
+      ADMIN_EMAIL: $ADMIN_EMAIL
+      ADMIN_PASSWORD: $ADMIN_PASSWORD
+      BASE_ADMIN_URL: 'http://postfacto:3000/admin'
+      BASE_WEB_URL: 'http://postfacto:3000'
+    links:
+    - postfacto
+
+  postfacto:
+    image: postfacto/postfacto:${TAG}
+    ports:
+    - '3000:3000'
+    environment:
+      DATABASE_URL: 'postgres://postfacto:secret@postgres:5432/postfacto'
+      DISABLE_SSL_REDIRECT: 'true'
+      REDIS_URL: 'redis://redis:6379'
+      SECRET_KEY_BASE: $SECRET_KEY_BASE
+    links:
+    - postgres
+    - redis
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: 'postfacto'
+      POSTGRES_PASSWORD: 'secret'
+
+  redis:
+    image: redis
